@@ -47,7 +47,7 @@
       <scope>provided</scope>
     </dependency>
   </dependencies>
-  
+
   <build>
     <defaultGoal>package</defaultGoal>
     <finalName>${project.artifactId}</finalName>
@@ -56,6 +56,14 @@
   <profiles>
     <profile>
       <id>wildfly-bootable-jar</id>
+      <properties>
+        <!-- 
+        Bug in WildFly plugin:
+        Specifying custom names for the bootable JAR does not work with goal dev-watch. 
+        <wildfly.bootable.run.jar.file.name>wildfly-bootable.jar</wildfly.bootable.run.jar.file.name>
+        <wildfly.bootable.package.output.file.name>wildfly-bootable.jar</wildfly.bootable.package.output.file.name>
+        -->
+      </properties>
       <build>
         <finalName>${project.artifactId}</finalName>
         <plugins>
@@ -75,7 +83,6 @@
                 <layer>deployment-scanner</layer>
               </excluded-layers>
               <hollow-jar>true</hollow-jar>
-              <output-file-name>wildfly-hollow.jar</output-file-name>
             </configuration>
             <executions>
               <execution>
