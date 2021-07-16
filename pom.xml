@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
@@ -18,6 +20,9 @@
 
   <properties>
     <java.code.version>11</java.code.version>
+
+    <wildfly.bootable.jar.version>5.0.1.Final</wildfly.bootable.jar.version>
+    <wildfly.version>24.0.0.Final</wildfly.version>
   </properties>
 
   <repositories>
@@ -42,5 +47,47 @@
       <scope>provided</scope>
     </dependency>
   </dependencies>
+  
+  <build>
+    <defaultGoal>package</defaultGoal>
+    <finalName>${project.artifactId}</finalName>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>wildfly-bootable-jar</id>
+      <build>
+        <finalName>${project.artifactId}</finalName>
+        <plugins>
+          <plugin>
+            <groupId>org.wildfly.plugins</groupId>
+            <artifactId>wildfly-jar-maven-plugin</artifactId>
+            <version>${wildfly.bootable.jar.version}</version>
+            <configuration>
+              <feature-pack-location>wildfly@maven(org.jboss.universe:community-universe)#${wildfly.version}</feature-pack-location>
+              <layers>
+                <layer>jaxrs</layer>
+                <layer>cdi</layer>
+                <layer>jpa</layer>
+                <layer>h2-default-datasource</layer>
+              </layers>
+              <excluded-layers>
+                <layer>deployment-scanner</layer>
+              </excluded-layers>
+              <hollow-jar>true</hollow-jar>
+              <output-file-name>wildfly-hollow.jar</output-file-name>
+            </configuration>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>package</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
 </project>
