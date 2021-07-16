@@ -1,0 +1,31 @@
+= Demo for various runtime options for Jakarta EE applications
+
+The application uses a simple REST/CDI/JPA stack:
+
+* `PersonEndpoint` exposes a simple CRUD api with the path `person`. +
+As an example `curl localhost:8080/person` will retrieve some demo data in JSON. +
+(For conveniance, test data are inserted into the database on first call)
+
+* `Person` ist a simple JPA entity used for the demo data.
+
+* `PersonRepository` loads and stores `Person` entries from/into the default datasource (using an in memory H2 db).
+
+* A second REST endpoint is `HelloEndpoint` publishing `Hello!` as plain text with path `hello`.
+
+The maven POM file defines a default goal of `package` and a final name of `jee-runtimes-demo`. Therefore `mvn` will build a WAR file `target/jee-runtimes-demo.war` containing the application.
+
+== Standard JEE server deployment
+
+The WAR file can be deployed in any Jakarta EE 8 server, e. g. WildFly 24.
+
+== WildFly Bootable JAR
+
+The project defines the maven profile `wildfly-bootable-jar`. If it's activated for building (i. e. `mvn -Pwildfly-bootable-jar`) an additional JAR file is built: `target/jee-runtimes-demo-bootable.jar`. It is a hollow JAR containing a WildFly server customized to just the extension needed (jaxrs, cdi, jpa, h2-default-datasource). The application can be started by
+
+`java -jar target/jee-runtimes-demo-bootable.jar --deployment=target/jee-runtimes-demo.war`
+
+The WildFly JAR plugin used for building the hollow JAR can also start the application in development mode:
+
+`mvn -Pwildfly-bootable-jar wildfly-jar:dev-watch`
+
+In this mode the server watches the program sources and hot reloads the application if something changes.
