@@ -21,6 +21,7 @@
   <properties>
     <java.code.version>11</java.code.version>
 
+    <payara.version>5.2021.4</payara.version>
     <wildfly.bootable.jar.version>5.0.1.Final</wildfly.bootable.jar.version>
     <wildfly.version>24.0.0.Final</wildfly.version>
   </properties>
@@ -89,6 +90,45 @@
                 <goals>
                   <goal>package</goal>
                 </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    
+    <profile>
+      <id>payara-micro</id>
+      <build>
+        <plugins>
+          <plugin>
+            <!-- Download Payara Micro -->
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>3.0.1</version>
+            <inherited>false</inherited>
+            <configuration>
+              <outputDirectory>${project.build.directory}</outputDirectory>
+            </configuration>
+            <executions>
+
+              <execution>
+                <id>payara-micro</id>
+                <phase>generate-resources</phase>
+                <goals>
+                  <goal>copy</goal>
+                </goals>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>fish.payara.extras</groupId>
+                      <artifactId>payara-micro</artifactId>
+                      <version>${payara.version}</version>
+                      <type>jar</type>
+                      <destFileName>payara-micro.jar</destFileName>
+                    </artifactItem>
+                  </artifactItems>
+                </configuration>
               </execution>
             </executions>
           </plugin>

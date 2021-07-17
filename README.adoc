@@ -20,7 +20,7 @@ The WAR file can be deployed in any Jakarta EE 8 server, e. g. WildFly 24.
 
 == WildFly Bootable JAR
 
-The project defines the maven profile `wildfly-bootable-jar`. If it's activated for building (i. e. `mvn -Pwildfly-bootable-jar`) an additional JAR file is built: `target/jee-runtimes-demo-bootable.jar`. It is a hollow JAR containing a WildFly server customized to just the extension needed (jaxrs, cdi, jpa, h2-default-datasource). The application can be started by
+The project defines the maven profile `wildfly-bootable-jar`. If it's activated for building (i. e. `mvn -Pwildfly-bootable-jar`) an additional JAR file is built: `target/jee-runtimes-demo-bootable.jar` (*). It is a hollow JAR containing a WildFly server customized to just the extension needed (`jaxrs`, `cdi`, `jpa`, `h2-default-datasource`). The application can be started by
 
 `java -jar target/jee-runtimes-demo-bootable.jar --deployment=target/jee-runtimes-demo.war`
 
@@ -29,3 +29,11 @@ The WildFly JAR plugin used for building the hollow JAR can also start the appli
 `mvn -Pwildfly-bootable-jar wildfly-jar:dev-watch`
 
 In this mode the server watches the program sources and hot reloads the application if something changes.
+
+(*) Due to a bug in the plugin, the hollow JAR cannot be renamed into e.g. `wildfly-bootable.jar`, because the JAR wouldn't be found by the development mode runner.
+
+== Payara Micro
+
+If you enable the maven profile `payara-micro`, Payara Micro is downloaded into `target/payara-micro.jar`. It's a Jakarta EE Web Profile server including some extensions. The application can be started by
+
+`java -jar target/payara-micro.jar target/jee-runtimes-demo.war`
