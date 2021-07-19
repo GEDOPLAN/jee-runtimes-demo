@@ -5,15 +5,15 @@ import de.gedoplan.showcase.entity.Person;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
 @ApplicationScoped
 @Transactional(rollbackOn = Exception.class)
 public class PersonRepository {
 
-  @Inject
+  @PersistenceContext
   EntityManager entityManager;
 
   public List<Person> findAll() {
