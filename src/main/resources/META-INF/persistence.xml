@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
-  <persistence-unit name="showcase" transaction-type="JTA">
-<!--     <jta-data-source>jdbc/showcase</jta-data-source> -->
+  <persistence-unit name="default" transaction-type="JTA">
 
-    <exclude-unlisted-classes>false</exclude-unlisted-classes>
+    <class>de.gedoplan.showcase.entity.Person</class>
 
     <shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
 
@@ -12,6 +11,7 @@
       <property name="eclipselink.ddl-generation" value="create-tables" />
       <property name="eclipselink.ddl-generation.output-mode" value="database" />
 
+      <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
       <property name="hibernate.hbm2ddl.auto" value="update" />
       <property name="hibernate.id.new_generator_mappings" value="true" />
       <property name="hibernate.show_sql" value="false" />

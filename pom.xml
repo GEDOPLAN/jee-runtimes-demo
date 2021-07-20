@@ -16,13 +16,21 @@
   <artifactId>jee-runtimes-demo</artifactId>
   <version>1.0-SNAPSHOT</version>
 
-  <packaging>war</packaging>
+  <packaging>${packaging.type}</packaging>
 
   <properties>
+    <packaging.type>war</packaging.type>
+
     <java.code.version>11</java.code.version>
 
     <payara.version>5.2021.4</payara.version>
+
+    <quarkus.platform.artifact-id>quarkus-universe-bom</quarkus.platform.artifact-id>
+    <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
+    <quarkus.platform.version>2.0.2.Final</quarkus.platform.version>
+
     <wildfly.bootable.jar.version>5.0.1.Final</wildfly.bootable.jar.version>
+
     <wildfly.version>24.0.0.Final</wildfly.version>
   </properties>
 
@@ -34,13 +42,6 @@
   </repositories>
 
   <dependencies>
-    <dependency>
-      <groupId>jakarta.platform</groupId>
-      <artifactId>jakarta.jakartaee-web-api</artifactId>
-      <version>8.0.0</version>
-      <scope>provided</scope>
-    </dependency>
-
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
@@ -54,7 +55,27 @@
     <finalName>${project.artifactId}</finalName>
   </build>
 
+  <!-- Following are profiles for different project setups / runtime selections -->
   <profiles>
+  
+    <!-- Profile for standard JEE - just one dependency -->
+    <profile>
+      <id>standard-jee</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>jakarta.platform</groupId>
+          <artifactId>jakarta.jakartaee-web-api</artifactId>
+          <version>8.0.0</version>
+          <scope>provided</scope>
+        </dependency>
+      </dependencies>
+    </profile>
+    <!-- End of standard JEE profile -->
+    
+    <!-- Profile for WildFly bootable JAR: Standard JEE plus plugin for provisioning a WildFly hollow JAR -->
     <profile>
       <id>wildfly-bootable-jar</id>
       <properties>
@@ -65,8 +86,15 @@
         <wildfly.bootable.package.output.file.name>wildfly-bootable.jar</wildfly.bootable.package.output.file.name>
         -->
       </properties>
+      <dependencies>
+        <dependency>
+          <groupId>jakarta.platform</groupId>
+          <artifactId>jakarta.jakartaee-web-api</artifactId>
+          <version>8.0.0</version>
+          <scope>provided</scope>
+        </dependency>
+      </dependencies>
       <build>
-        <finalName>${project.artifactId}</finalName>
         <plugins>
           <plugin>
             <groupId>org.wildfly.plugins</groupId>
@@ -96,9 +124,19 @@
         </plugins>
       </build>
     </profile>
-    
+    <!-- End of WildFly bootable JAR profile -->
+
+    <!-- Profile for Payara Micro: Standard JEE plus download of Payara Micro -->
     <profile>
       <id>payara-micro</id>
+      <dependencies>
+        <dependency>
+          <groupId>jakarta.platform</groupId>
+          <artifactId>jakarta.jakartaee-web-api</artifactId>
+          <version>8.0.0</version>
+          <scope>provided</scope>
+        </dependency>
+      </dependencies>
       <build>
         <plugins>
           <plugin>
@@ -135,6 +173,84 @@
         </plugins>
       </build>
     </profile>
+    <!-- End of Payara Micro profile -->
+
+    <!-- Profile for Quarkus: Customized dependencies for the building blocks used plus plugin for build and dev mode -->
+    <profile>
+      <id>quarkus</id>
+      <properties>
+        <packaging.type>jar</packaging.type>
+      </properties>
+      <dependencyManagement>
+        <dependencies>
+          <dependency>
+            <groupId>${quarkus.platform.group-id}</groupId>
+            <artifactId>${quarkus.platform.artifact-id}</artifactId>
+            <version>${quarkus.platform.version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+          </dependency>
+        </dependencies>
+      </dependencyManagement>
+      <dependencies>
+        <dependency>
+          <groupId>io.quarkus</groupId>
+          <artifactId>quarkus-arc</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>io.quarkus</groupId>
+          <artifactId>quarkus-resteasy-jsonb</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>io.quarkus</groupId>
+          <artifactId>quarkus-hibernate-orm</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>io.quarkus</groupId>
+          <artifactId>quarkus-jdbc-h2</artifactId>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>${quarkus.platform.group-id}</groupId>
+            <artifactId>quarkus-maven-plugin</artifactId>
+            <version>${quarkus.platform.version}</version>
+            <extensions>true</extensions>
+            <configuration>
+              <systemProperties>
+                <!-- 
+                This system property is necessary only because we are switching the maven packaging type
+                from war (default) to jar in this profile. 
+                See https://github.com/quarkusio/quarkus/issues/9727
+                -->
+                <quarkus.bootstrap.effective-model-builder>true</quarkus.bootstrap.effective-model-builder>
+              </systemProperties>
+            </configuration>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>build</goal>
+                  <goal>generate-code</goal>
+                  <goal>generate-code-tests</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <systemPropertyVariables>
+                <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+                <maven.home>${maven.home}</maven.home>
+                <quarkus.bootstrap.effective-model-builder>true</quarkus.bootstrap.effective-model-builder>
+              </systemPropertyVariables>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!-- End of Quarkus profile -->
   </profiles>
 
 </project>
