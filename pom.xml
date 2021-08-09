@@ -29,7 +29,7 @@
     <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
     <quarkus.platform.version>2.0.2.Final</quarkus.platform.version>
 
-    <wildfly.bootable.jar.version>5.0.1.Final</wildfly.bootable.jar.version>
+    <wildfly.bootable.jar.version>5.0.2.Final</wildfly.bootable.jar.version>
 
     <wildfly.version>24.0.0.Final</wildfly.version>
   </properties>
@@ -78,14 +78,6 @@
     <!-- Profile for WildFly bootable JAR: Standard JEE plus plugin for provisioning a WildFly hollow JAR -->
     <profile>
       <id>wildfly-bootable-jar</id>
-      <properties>
-        <!-- 
-        Bug in WildFly plugin:
-        Specifying custom names for the bootable JAR does not work with goal dev-watch. 
-        <wildfly.bootable.run.jar.file.name>wildfly-bootable.jar</wildfly.bootable.run.jar.file.name>
-        <wildfly.bootable.package.output.file.name>wildfly-bootable.jar</wildfly.bootable.package.output.file.name>
-        -->
-      </properties>
       <dependencies>
         <dependency>
           <groupId>jakarta.platform</groupId>
@@ -112,6 +104,11 @@
                 <layer>deployment-scanner</layer>
               </excluded-layers>
               <hollow-jar>true</hollow-jar>
+              <!-- 
+              Bug in WildFly plugin:
+              Specifying custom names for the bootable JAR does not work with goal dev-watch. 
+              <output-file-name>wildfly-bootable.jar</output-file-name>
+              -->
             </configuration>
             <executions>
               <execution>
