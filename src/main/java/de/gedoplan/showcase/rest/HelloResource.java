@@ -8,7 +8,7 @@ import javax.ws.rs.core.MediaType;
 
 @ApplicationScoped
 @Path("hello")
-public class HelloEndpoint {
+public class HelloResource {
 
   @GET
   @Produces(MediaType.TEXT_PLAIN)

@@ -13,3 +13,4 @@ buildNumber.properties
 .factorypath
 .tern-project
 .vscode/
+.idea/

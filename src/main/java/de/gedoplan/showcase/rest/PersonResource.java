@@ -26,11 +26,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 @ApplicationScoped
-@Path(PersonEndpoint.PATH)
-public class PersonEndpoint {
-  public static final String PATH = "person";
-  public static final String ID_NAME = "id";
-  public static final String ID_TEMPLATE = "{" + ID_NAME + "}";
+@Path("person")
+public class PersonResource {
 
   @Inject
   PersonRepository personRepository;
@@ -42,9 +39,9 @@ public class PersonEndpoint {
   }
 
   @GET
-  @Path(ID_TEMPLATE)
+  @Path("{id}")
   @Produces(MediaType.APPLICATION_JSON)
-  public Person getById(@PathParam(ID_NAME) Integer id) {
+  public Person getById(@PathParam("id") Integer id) {
     Person person = this.personRepository.findById(id);
     if (person != null) {
       return person;
@@ -54,9 +51,9 @@ public class PersonEndpoint {
   }
 
   @PUT
-  @Path(ID_TEMPLATE)
+  @Path("{id}")
   @Consumes(MediaType.APPLICATION_JSON)
-  public void updatePerson(@PathParam(ID_NAME) Integer id, Person Person) {
+  public void updatePerson(@PathParam("id") Integer id, Person Person) {
     if (!id.equals(Person.getId())) {
       throw new BadRequestException("id of updated object must be unchanged");
     }
@@ -73,13 +70,13 @@ public class PersonEndpoint {
 
     this.personRepository.persist(Person);
 
-    URI createdUri = uriInfo.getAbsolutePathBuilder().path(ID_TEMPLATE).resolveTemplate(ID_NAME, Person.getId()).build();
+    URI createdUri = uriInfo.getAbsolutePathBuilder().path("{" + "id" + "}").resolveTemplate("id", Person.getId()).build();
     return Response.created(createdUri).build();
   }
 
   @DELETE
-  @Path(ID_TEMPLATE)
-  public void deletePerson(@PathParam(ID_NAME) Integer id) {
+  @Path("{id}")
+  public void deletePerson(@PathParam("id") Integer id) {
     this.personRepository.removeById(id);
   }
 

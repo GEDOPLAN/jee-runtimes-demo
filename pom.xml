@@ -23,13 +23,13 @@
 
     <java.code.version>11</java.code.version>
 
-    <payara.version>5.2021.4</payara.version>
+    <payara.version>5.2021.8</payara.version>
 
     <quarkus.platform.artifact-id>quarkus-universe-bom</quarkus.platform.artifact-id>
     <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
-    <quarkus.platform.version>2.0.2.Final</quarkus.platform.version>
+    <quarkus.platform.version>2.4.1.Final</quarkus.platform.version>
 
-    <wildfly.bootable.jar.version>5.0.2.Final</wildfly.bootable.jar.version>
+    <wildfly.bootable.jar.version>6.1.0.Final</wildfly.bootable.jar.version>
 
     <wildfly.version>24.0.0.Final</wildfly.version>
   </properties>
@@ -37,7 +37,7 @@
   <repositories>
     <repository>
       <id>gedoplanPublic</id>
-      <url>http://service.gedoplan.de/nexus/content/groups/public</url>
+      <url>https://service.gedoplan.de/nexus/content/groups/public</url>
     </repository>
   </repositories>
 
@@ -45,7 +45,7 @@
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
-      <version>1.18.20</version>
+      <version>1.18.22</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>
@@ -104,11 +104,7 @@
                 <layer>deployment-scanner</layer>
               </excluded-layers>
               <hollow-jar>true</hollow-jar>
-              <!-- 
-              Bug in WildFly plugin:
-              Specifying custom names for the bootable JAR does not work with goal dev-watch. 
               <output-file-name>wildfly-bootable.jar</output-file-name>
-              -->
             </configuration>
             <executions>
               <execution>

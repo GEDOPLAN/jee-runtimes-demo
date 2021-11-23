@@ -2,7 +2,7 @@
 
 The application uses a simple REST/CDI/JPA stack:
 
-* `PersonEndpoint` exposes a simple CRUD api with the path `person`. +
+* `PersonResource` exposes a simple CRUD api with the path `person`. +
 As an example `curl localhost:8080/person` will retrieve some demo data in JSON. +
 (For conveniance, test data are inserted into the database on first call)
 
@@ -10,7 +10,7 @@ As an example `curl localhost:8080/person` will retrieve some demo data in JSON.
 
 * `PersonRepository` loads and stores `Person` entries from/into the default datasource (using an in memory H2 db).
 
-* A second REST endpoint is `HelloEndpoint` publishing `Hello!` as plain text with path `hello`.
+* A second REST resource is `HelloResource` publishing `Hello!` as plain text with path `hello`.
 
 The maven POM file defines a default goal of `package` and a final name of `jee-runtimes-demo`. Therefore `mvn` will build a WAR file `target/jee-runtimes-demo.war` containing the application.
 
