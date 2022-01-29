@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project
-  xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+        xmlns="http://maven.apache.org/POM/4.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -23,15 +23,15 @@
 
     <java.code.version>11</java.code.version>
 
-    <payara.version>5.2021.8</payara.version>
+    <payara.version>5.2021.10</payara.version>
 
-    <quarkus.platform.artifact-id>quarkus-universe-bom</quarkus.platform.artifact-id>
+    <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
     <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
-    <quarkus.platform.version>2.4.1.Final</quarkus.platform.version>
+    <quarkus.platform.version>2.6.3.Final</quarkus.platform.version>
 
-    <wildfly.bootable.jar.version>6.1.0.Final</wildfly.bootable.jar.version>
+    <wildfly.bootable.jar.version>7.0.0.Final</wildfly.bootable.jar.version>
 
-    <wildfly.version>24.0.0.Final</wildfly.version>
+    <wildfly.version>26.0.0.Final</wildfly.version>
   </properties>
 
   <repositories>
@@ -57,7 +57,7 @@
 
   <!-- Following are profiles for different project setups / runtime selections -->
   <profiles>
-  
+
     <!-- Profile for standard JEE - just one dependency -->
     <profile>
       <id>standard-jee</id>
@@ -74,7 +74,7 @@
       </dependencies>
     </profile>
     <!-- End of standard JEE profile -->
-    
+
     <!-- Profile for WildFly bootable JAR: Standard JEE plus plugin for provisioning a WildFly hollow JAR -->
     <profile>
       <id>wildfly-bootable-jar</id>
@@ -168,6 +168,39 @@
     </profile>
     <!-- End of Payara Micro profile -->
 
+    <!-- Profile for Open Liberty: Standard JEE plus download of Open Liberty -->
+    <profile>
+      <id>open-liberty</id>
+      <dependencies>
+        <dependency>
+          <groupId>jakarta.platform</groupId>
+          <artifactId>jakarta.jakartaee-web-api</artifactId>
+          <version>8.0.0</version>
+          <scope>provided</scope>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>io.openliberty.tools</groupId>
+            <artifactId>liberty-maven-plugin</artifactId>
+            <version>3.5.1</version>
+            <configuration>
+              <copyDependencies>
+                <location>${project.build.directory}/liberty/wlp/usr/shared/resources</location>
+                <dependency>
+                  <groupId>com.h2database</groupId>
+                  <artifactId>h2</artifactId>
+                  <version>1.4.197</version>
+                </dependency>
+              </copyDependencies>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!-- End of Payara Micro profile -->
+
     <!-- Profile for Quarkus: Customized dependencies for the building blocks used plus plugin for build and dev mode -->
     <profile>
       <id>quarkus</id>
@@ -212,9 +245,9 @@
             <extensions>true</extensions>
             <configuration>
               <systemProperties>
-                <!-- 
+                <!--
                 This system property is necessary only because we are switching the maven packaging type
-                from war (default) to jar in this profile. 
+                from war (default) to jar in this profile.
                 See https://github.com/quarkusio/quarkus/issues/9727
                 -->
                 <quarkus.bootstrap.effective-model-builder>true</quarkus.bootstrap.effective-model-builder>

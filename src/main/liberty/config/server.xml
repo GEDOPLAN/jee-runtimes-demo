@@ -1,0 +1,31 @@
+<server description="Sample Liberty server">
+
+  <featureManager>
+    <feature>jaxrs-2.1</feature>
+    <feature>jsonp-1.1</feature>
+    <feature>cdi-2.0</feature>
+    <feature>jpa-2.2</feature>
+  </featureManager>
+
+  <variable name="default.http.port" defaultValue="8080" />
+  <variable name="default.https.port" defaultValue="8443" />
+
+  <httpEndpoint httpPort="${default.http.port}" httpsPort="${default.https.port}"
+                id="defaultHttpEndpoint" host="*" />
+
+<!--  <application location="jee-runtimes-demo.war" type="war" context-root="/"></application>-->
+
+  <!-- Derby Library Configuration -->
+  <library id="h2JDBCLib">
+    <fileset dir="${shared.resource.dir}/" includes="h2*.jar" />
+  </library>
+
+  <!-- Datasource Configuration -->
+  <!-- tag::data-source[] -->
+  <dataSource id="DefaultDataSource">
+    <jdbcDriver libraryRef="h2JDBCLib"/>
+    <properties URL="jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE" password="sa" user="sa"/>
+  </dataSource>
+  <!-- end::data-source[] -->
+
+</server>
